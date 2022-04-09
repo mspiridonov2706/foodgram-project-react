@@ -20,8 +20,8 @@ services:
   backend:
     image: mspiridonov/foodgram_backend:latest
     restart: always
-    # volumes:
-    #   - static_value:/app/static/
+    volumes:
+      - static_value:/app/static/
     depends_on:
       - db
     env_file:
@@ -35,20 +35,25 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/:/usr/share/nginx/html/api/docs/
-      # - static_value:/var/html/static/
+      - static_value:/usr/share/nginx/backend/static/
     depends_on:
       - backend
 
-# volumes:
-#   static_value:
+volumes:
+  static_value:
 
 
 # docker-compose stop
 # docker-compose rm backend
-# docker image rm
+# docker image rm mspiridonov/foodgram_backend
 # docker-compose up -d --build
-# http://localhost/api/docs/
+# 
+# docker-compose down -v
+# docker-compose down -rmi all
+#
 # docker-compose exec -T backend python manage.py migrate
 # docker-compose exec -T backend python manage.py createsuperuser
 # docker-compose exec -T backend python manage.py collectstatic --no-input
-# docker-compose down --rmi all
+#
+# http://localhost/api/docs/
+# http://localhost/admin
