@@ -4,7 +4,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 def get_root_path():
-    return Path(__file__).parent.parent
+    return Path(__file__).parent.parent.parent
 
 load_dotenv(dotenv_path=os.path.join(get_root_path(), '.env'))
 
