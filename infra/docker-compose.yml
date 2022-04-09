@@ -45,6 +45,7 @@ services:
 
 # docker-compose stop
 # docker-compose rm backend
+# docker image rm
 # docker-compose up -d --build
 # http://localhost/api/docs/
 # docker-compose exec -T backend python manage.py migrate
