@@ -20,8 +20,6 @@ services:
   backend:
     image: mspiridonov/foodgram_backend:latest
     restart: always
-    volumes:
-      - static_value:/app/static/
     depends_on:
       - db
     env_file:
