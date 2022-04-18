@@ -225,7 +225,7 @@ class RecipesSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
-        rep["image"] = '/'.join(rep["image"].split('/')[-4:])
+        rep["image"] = 'http://localhost/' + '/'.join(rep["image"].split('/')[-4:])
         rep["tags"] = TagsSerializer(instance.tags.all(), many=True).data
         rep["ingredients"] = IngredientsRecipeSerializer(
             instance.recipes_ingredients.all(), many=True).data
