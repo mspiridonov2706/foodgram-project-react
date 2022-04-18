@@ -24,6 +24,8 @@ services:
       - db
     env_file:
       - ../.env
+    volumes:
+      - ../data/:/data/
 
   nginx:
     image: nginx:1.19.3
@@ -46,7 +48,7 @@ services:
 # docker-compose up -d --build
 # 
 # docker-compose down -v
-# docker-compose down -rmi all
+# docker-compose down --rmi all
 #
 # docker-compose exec -T backend python manage.py migrate
 # docker-compose exec -T backend python manage.py createsuperuser
