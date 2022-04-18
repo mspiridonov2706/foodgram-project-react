@@ -3,8 +3,10 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+
 def get_root_path():
-    return Path(__file__).parent.parent
+    return Path(__file__).parent.parent.parent
+
 
 load_dotenv(dotenv_path=os.path.join(get_root_path(), '.env'))
 
@@ -24,6 +26,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
+    'django_filters',
+    'api',
+    'recipes',
 ]
 
 MIDDLEWARE = [
@@ -38,10 +44,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'foodgram_project.urls'
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,7 +89,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'Europe/Moscow'
 
@@ -93,4 +100,18 @@ USE_L10N = True
 USE_TZ = False
 
 STATIC_URL = '/staticfiles/'
-STATIC_ROOT = os.path.join(BASE_DIR, './staticfiles')
+
+if DEBUG:
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, 'staticfiles/'),)
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, './staticfiles')
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 6,
+}
+
+MEDIA_URL = os.path.join(BASE_DIR, '/')
