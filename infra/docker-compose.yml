@@ -26,6 +26,7 @@ services:
       - ../.env
     volumes:
       - ../data/:/data/
+      - media_value:/app/media/
 
   nginx:
     image: nginx:1.19.3
@@ -36,8 +37,12 @@ services:
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/:/usr/share/nginx/html/api/docs/
       - ../backend/staticfiles:/var/html/staticfiles/
+      - media_value:/var/html/media/
     depends_on:
       - backend
+
+volumes:
+  media_value:
 
 # delete all
 # docker-compose stop
