@@ -182,11 +182,6 @@ class FavoritesViewSet(FavoriteAndShoppingViewSet):
         current_user = request.user
         recipe = get_object_or_404(Recipes, id=recipe_id)
 
-        # TODO: стереть потом
-        # if current_user == recipe.author:
-        #     data = {'errors': 'Рецепт уже ваш самый любимый'}
-        #     return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
-
         is_favorite = Favorite.objects.filter(
             user=current_user, recipe=recipe).exists()
 
