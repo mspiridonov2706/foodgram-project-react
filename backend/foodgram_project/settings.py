@@ -115,3 +115,4 @@ REST_FRAMEWORK = {
 }
 
 MEDIA_URL = os.path.join(BASE_DIR, '/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
