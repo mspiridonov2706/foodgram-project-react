@@ -37,10 +37,12 @@ services:
     depends_on:
       - backend
 
-
+# delete all
 # docker-compose stop
-# docker-compose rm backend
+# docker-compose down -v
 # docker image rm mspiridonov/foodgram_backend
+# docker volume prune
+
 # docker-compose up -d --build
 # 
 # docker-compose down -v
