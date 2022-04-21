@@ -1,5 +1,5 @@
 import io
-
+from django.core.files import File
 from django.db.models import Sum
 from django.http import FileResponse
 from django_filters.rest_framework import DjangoFilterBackend
@@ -262,7 +262,9 @@ def download_shopping_cart(request):
     file = ''.join([f'{d[0].capitalize()} ({d[1]}) - {d[2]}\n' for d in data])
     file = io.BytesIO(str.encode(file))
 
-    response = FileResponse(file, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="ShoppingList.pdf"'
+    response = FileResponse(file, content_type='text/plain',
+                            as_attachment=True, filename='shopping-list.txt')
+
+    response['Content-Disposition'] = 'attachment; filename="ShoppingList.txt"'
 
     return response
