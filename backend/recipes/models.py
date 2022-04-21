@@ -25,8 +25,8 @@ class Subscribe(models.Model):
             raise ValidationError('You cannot follow yourself')
 
     def __str__(self):
-        text = f'{self.user} подписан на {self.author}'
-        return text
+        str = f'{self.user} подписан на {self.author}'
+        return str
 
     class Meta:
         constraints = [
@@ -35,6 +35,9 @@ class Subscribe(models.Model):
                 name='unique_following'
             ),
         ]
+
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
 
 
 class Ingredients(models.Model):
@@ -47,8 +50,14 @@ class Ingredients(models.Model):
         verbose_name='Еденица измерения',
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         unique_together = [['name', 'measurement_unit']]
+
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
 
 
 class Tags(models.Model):
@@ -66,6 +75,13 @@ class Tags(models.Model):
         verbose_name='Слаг',
         unique=True,
     )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Тэг'
+        verbose_name_plural = 'Тэги'
 
 
 class Recipes(models.Model):
@@ -105,6 +121,13 @@ class Recipes(models.Model):
         verbose_name='Время приготовления'
     )
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
+
 
 class RecipesIngridients(models.Model):
     ingredient = models.ForeignKey(
@@ -122,6 +145,14 @@ class RecipesIngridients(models.Model):
     amount = models.IntegerField(
         verbose_name='Количество ингридиента',
     )
+
+    def __str__(self):
+        str = f'{self.recipe} - {self.ingredient}'
+        return str
+
+    class Meta:
+        verbose_name = 'Рецепт-ингредиент'
+        verbose_name_plural = 'Рецепты-ингредиенты'
 
 
 class Favorite(models.Model):
@@ -155,6 +186,9 @@ class Favorite(models.Model):
             ),
         ]
 
+        verbose_name = 'Любимый рецепт'
+        verbose_name_plural = 'Любимые рецепты'
+
 
 class ShoppingCarts(models.Model):
     user = models.ForeignKey(
@@ -186,3 +220,6 @@ class ShoppingCarts(models.Model):
                 name='unique_shopping'
             ),
         ]
+
+        verbose_name = 'Список покупок'
+        verbose_name_plural = 'Списки покупок'
