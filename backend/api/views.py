@@ -1,6 +1,8 @@
+from django.db.models import Sum
+from django.http import FileResponse
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, permissions, status, viewsets
-from rest_framework.decorators import action
+from rest_framework import mixins, permissions, status, viewsets, exceptions
+from rest_framework.decorators import action, api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
@@ -242,3 +244,23 @@ class ShoppingViewSet(FavoriteAndShoppingViewSet):
             return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
         ShoppingCarts.objects.filter(user=current_user, recipe=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+def download_shopping_cart(request):
+    if request.user.is_anonymous:
+        raise exceptions.AuthenticationFailed
+    current_user = request.user
+
+    values = ('recipe__ingredients__name',
+              'recipe__ingredients__measurement_unit')
+    annotate = Sum('recipe__recipes_ingredients__amount')
+    data = current_user.shoppingcarts.values_list(*values).annotate(annotate)
+
+    file = ''.join([f'{d[0].capitalize()} ({d[1]}) - {d[2]}\n' for d in data])
+    file = str.encode(file)
+
+    response = FileResponse(file, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="ShoppingList.pdf"'
+
+    return response

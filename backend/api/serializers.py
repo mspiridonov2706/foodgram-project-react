@@ -165,7 +165,7 @@ class TagsSerializer(serializers.ModelSerializer):
 
 class IngredientsRecipeSerializer(serializers.ModelSerializer):
 
-    id = serializers.PrimaryKeyRelatedField(queryset=Ingredients.objects.all())
+    id = serializers.SerializerMethodField(default=Ingredients.objects.all())
     name = serializers.SerializerMethodField()
     measurement_unit = serializers.SerializerMethodField()
 
@@ -179,6 +179,9 @@ class IngredientsRecipeSerializer(serializers.ModelSerializer):
 
     def get_measurement_unit(self, obj):
         return obj.ingredient.measurement_unit
+
+    def get_id(self, obj):
+        return obj.ingredient_id
 
 
 class RecipesSerializer(serializers.ModelSerializer):

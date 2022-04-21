@@ -43,21 +43,3 @@ services:
 
 volumes:
   media_value:
-
-# delete all
-# docker-compose stop
-# docker-compose down -v
-# docker image rm mspiridonov/foodgram_backend
-# docker volume prune
-
-# docker-compose up -d --build
-# 
-# docker-compose down -v
-# docker-compose down --rmi all
-#
-# docker-compose exec -T backend python manage.py migrate
-# docker-compose exec -T backend python manage.py createsuperuser
-# docker-compose exec -T backend python manage.py collectstatic --no-input
-#
-# http://localhost/api/docs/
-# http://localhost/admin

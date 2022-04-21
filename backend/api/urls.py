@@ -3,6 +3,7 @@ from rest_framework import routers
 
 from api.auth import CustomAuthToken, CustomLogoutToken
 from api.views import (
+    download_shopping_cart,
     FavoritesViewSet,
     IngredientsViewSet,
     RecipesViewSet,
@@ -34,7 +35,8 @@ router.register(r'recipes/(?P<recipe_id>[\d]+)/shopping_cart',
 router.register('recipes', RecipesViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('recipes/download_shopping_cart/', download_shopping_cart),
     path('auth/token/login/', CustomAuthToken.as_view()),
     path('auth/token/logout/', CustomLogoutToken.as_view()),
+    path('', include(router.urls)),
 ]
