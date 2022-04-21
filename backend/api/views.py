@@ -37,6 +37,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = LimitOffsetPagination
+    permission_classes = None
 
     def get_serializer_class(self):
         if self.action == 'get_subscriptions':

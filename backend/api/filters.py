@@ -6,7 +6,7 @@ from recipes.models import Ingredients, Recipes
 class RecipeFilter(filters.FilterSet):
     tags = filters.CharFilter(
         field_name='tags__slug',
-        lookup_expr='exact',
+        method='filter_tags',
     )
     is_favorited = filters.BooleanFilter(
         field_name='is_favorited',
@@ -16,6 +16,13 @@ class RecipeFilter(filters.FilterSet):
         field_name='is_in_shopping_cart',
         method='filter_is_in_shopping_cart',
     )
+
+    def filter_tags(self, queryset, name, value):
+        tags = self.data.getlist('tags')
+        print(tags)
+        queryset = queryset.filter(tags__slug__in=tags).distinct()
+        print(queryset)
+        return queryset
 
     def filter_is_favorited(self, queryset, name, value):
         if value:
