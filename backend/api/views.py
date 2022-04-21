@@ -262,7 +262,7 @@ def download_shopping_cart(request):
     file = ''.join([f'{d[0].capitalize()} ({d[1]}) - {d[2]}\n' for d in data])
     file = io.BytesIO(str.encode(file))
 
-    response = FileResponse(file, content_type='application/octet-stream')
+    response = FileResponse(file, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="ShoppingList.pdf"'
 
     return response
