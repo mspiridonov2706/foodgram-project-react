@@ -1,5 +1,5 @@
 import io
-from django.core.files import File
+
 from django.db.models import Sum
 from django.http import FileResponse
 from django_filters.rest_framework import DjangoFilterBackend
