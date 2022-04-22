@@ -22,7 +22,7 @@ class Subscribe(models.Model):
 
     def clean(self):
         if self.user == self.author:
-            raise ValidationError('You cannot follow yourself')
+            raise ValidationError('Нельзя подписываться на самого себя.')
 
     def __str__(self):
         str = f'{self.user} подписан на {self.author}'
@@ -170,10 +170,6 @@ class Favorite(models.Model):
         related_name='favorite',
     )
 
-    def clean(self):
-        if self.user == self.author:
-            raise ValidationError('It is already your fav =)')
-
     def __str__(self):
         text = f'{self.user} - {self.recipe}'
         return text
@@ -207,7 +203,7 @@ class ShoppingCarts(models.Model):
 
     def clean(self):
         if self.user == self.author:
-            raise ValidationError('It is already in your shopping')
+            raise ValidationError('Рецепт уже в списке покупок.')
 
     def __str__(self):
         text = f'{self.user} - {self.recipe}'

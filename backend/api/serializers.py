@@ -63,26 +63,24 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate_email(self, email):
         if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError("Email already exists!")
+            raise serializers.ValidationError(
+                "Пользователь с такой почтой уже существует."
+            )
         return email
 
     def validate_username(self, username):
         if User.objects.filter(username=username).exists():
-            raise serializers.ValidationError("Username already exists!")
+            raise serializers.ValidationError(
+                "Такой пользователь уже существует."
+            )
         return username
 
 
 class UserSubsribedSerializer(UserSerializer):
-    is_subscribed = serializers.SerializerMethodField()
+    is_subscribed = serializers.BooleanField(source='following.all')
 
     class Meta(UserSerializer.Meta):
         fields = UserSerializer.Meta.fields + ['is_subscribed']
-
-    def get_is_subscribed(self, obj):
-        user = self.context['request'].user
-        if user.is_authenticated and obj.following.filter(user=user.id):
-            return True
-        return False
 
 
 class RecipesSmallSerializer(serializers.ModelSerializer):
@@ -95,7 +93,7 @@ class RecipesSmallSerializer(serializers.ModelSerializer):
 
 class UserFullSerializer(UserSubsribedSerializer):
     recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField()
+    recipes_count = serializers.IntegerField(source='recipe.count')
 
     class Meta(UserSubsribedSerializer.Meta):
         fields = UserSubsribedSerializer.Meta.fields + ['recipes',
@@ -109,10 +107,6 @@ class UserFullSerializer(UserSubsribedSerializer):
             queryset = user.recipe
         recipes = RecipesSmallSerializer(queryset, many=True).data
         return recipes
-
-    def get_recipes_count(self, user):
-        count = user.recipe.count()
-        return count
 
 
 class SetPasswordSerializer(serializers.Serializer):
@@ -134,14 +128,14 @@ class SetPasswordSerializer(serializers.Serializer):
     def validate_current_password(self, password):
         user = self.context['request'].user
         if not user.check_password(password):
-            raise serializers.ValidationError("Текущий пароль указан неверно!")
+            raise serializers.ValidationError("Текущий пароль указан неверно.")
         return password
 
     def validate(self, data):
         new_password = data['new_password']
         current_password = data['current_password']
         if current_password == new_password:
-            raise serializers.ValidationError("Пароли не должны совпадать")
+            raise serializers.ValidationError("Пароли не должны совпадать.")
         return data
 
 
@@ -165,23 +159,19 @@ class TagsSerializer(serializers.ModelSerializer):
 
 class IngredientsRecipeSerializer(serializers.ModelSerializer):
 
-    id = serializers.SerializerMethodField(default=Ingredients.objects.all())
-    name = serializers.SerializerMethodField()
-    measurement_unit = serializers.SerializerMethodField()
+    id = serializers.CharField(
+        default=Ingredients.objects.all(),
+        source='ingredient_id'
+    )
+    name = serializers.CharField(source='ingredient.name')
+    measurement_unit = serializers.CharField(
+        source='ingredient.measurement_unit'
+    )
 
     class Meta:
         model = RecipesIngridients
         fields = ('id', 'amount', 'name', 'measurement_unit')
         read_only_fields = ['name', 'measurement_unit']
-
-    def get_name(self, obj):
-        return obj.ingredient.name
-
-    def get_measurement_unit(self, obj):
-        return obj.ingredient.measurement_unit
-
-    def get_id(self, obj):
-        return obj.ingredient_id
 
 
 class RecipesSerializer(serializers.ModelSerializer):
@@ -189,8 +179,8 @@ class RecipesSerializer(serializers.ModelSerializer):
     image = serializers.ImageField()
     ingredients = IngredientsSerializer(many=True)
     author = UserSubsribedSerializer(default=serializers.CurrentUserDefault())
-    is_favorited = serializers.SerializerMethodField(required=False)
-    is_in_shopping_cart = serializers.SerializerMethodField(required=False)
+    is_favorited = serializers.BooleanField(source='favorite.all')
+    is_in_shopping_cart = serializers.BooleanField(source='shoppingcarts.all')
 
     class Meta:
         model = Recipes
@@ -283,27 +273,3 @@ class RecipesSerializer(serializers.ModelSerializer):
             setattr(recipe, key, value)
         recipe.save()
         return recipe
-
-    def get_is_favorited(self, recipe):
-        current_user = self.context['request'].user
-        if current_user.is_anonymous:
-            return False
-        is_favorited = current_user.favorite.filter(
-            user=current_user.id,
-            recipe=recipe.id
-        )
-        if is_favorited:
-            return True
-        return False
-
-    def get_is_in_shopping_cart(self, recipe):
-        current_user = self.context['request'].user
-        if current_user.is_anonymous:
-            return False
-        is_in_shopping_cart = current_user.shoppingcarts.filter(
-            user=current_user.id,
-            recipe=recipe.id
-        )
-        if is_in_shopping_cart:
-            return True
-        return False

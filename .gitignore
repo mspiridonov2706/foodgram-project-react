@@ -134,3 +134,5 @@ dmypy.json
 staticfiles/
 media/
 command.yml
+.vscode
+.vscode/settings.json

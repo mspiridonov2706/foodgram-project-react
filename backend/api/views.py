@@ -41,9 +41,9 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'get_subscriptions':
             return UserFullSerializer
-        elif self.action == 'set_password':
+        if self.action == 'set_password':
             return SetPasswordSerializer
-        elif self.request.method == 'GET':
+        if self.request.method == 'GET':
             return UserSubsribedSerializer
         return UserSerializer
 
@@ -56,6 +56,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def my_profile(self, request):
         user = request.user
         serializer = self.get_serializer(user)
+        serializer.is_valid(raise_exception=True)
         return Response(serializer.data)
 
     @action(
@@ -69,14 +70,11 @@ class UserViewSet(viewsets.ModelViewSet):
         data = request.data
         context = {'request': request}
         serializer = self.get_serializer(data=data, context=context)
-
-        if serializer.is_valid():
-            password = serializer.validated_data['new_password']
-            user.set_password(password)
-            user.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        password = serializer.validated_data['new_password']
+        user.set_password(password)
+        user.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=False,
@@ -85,9 +83,9 @@ class UserViewSet(viewsets.ModelViewSet):
         permission_classes=(permissions.IsAuthenticated,),
     )
     def get_subscriptions(self, request):
-        queryset = User.objects.all()
         user = request.user
-        queryset = [query.author for query in user.follower.all()]
+        follow = user.follower.values_list('author_id', flat=True)
+        queryset = User.objects.all().filter(id__in=follow)
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)
@@ -264,7 +262,5 @@ def download_shopping_cart(request):
 
     response = FileResponse(file, content_type='text/plain',
                             as_attachment=True, filename='shopping-list.txt')
-
-    response['Content-Disposition'] = 'attachment; filename="ShoppingList.txt"'
 
     return response
