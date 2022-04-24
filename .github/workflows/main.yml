@@ -63,11 +63,14 @@ jobs:
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
-          context: https://github.com/Muxa2793/foodgram-project-react.git
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            docker-compose stop
+            docker-compose rm -f backend  
+            docker image rm mspiridonov/foodgram_backend
+
             cd foodgram-project-react
             sudo rm .env
             touch .env
