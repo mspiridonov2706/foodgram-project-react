@@ -176,8 +176,6 @@ class IngredientsRecipeSerializer(serializers.ModelSerializer):
 
 class RecipesSerializer(serializers.ModelSerializer):
 
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault)
-
     image = serializers.ImageField()
     ingredients = IngredientsSerializer(many=True)
     author = UserSubsribedSerializer(default=serializers.CurrentUserDefault())
@@ -197,7 +195,6 @@ class RecipesSerializer(serializers.ModelSerializer):
             'image',
             'text',
             'cooking_time',
-            'user'
         ]
 
     def get_is_favorited(self, recipe):
