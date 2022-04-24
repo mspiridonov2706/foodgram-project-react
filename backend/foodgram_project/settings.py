@@ -14,7 +14,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -114,4 +114,4 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 6,
 }
 
-MEDIA_URL = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = os.path.join(BASE_DIR, '/')
