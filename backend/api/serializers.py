@@ -179,8 +179,14 @@ class RecipesSerializer(serializers.ModelSerializer):
     image = serializers.ImageField()
     ingredients = IngredientsSerializer(many=True)
     author = UserSubsribedSerializer(default=serializers.CurrentUserDefault())
-    is_favorited = serializers.BooleanField(source='favorite.all')
-    is_in_shopping_cart = serializers.BooleanField(source='shoppingcarts.all')
+    is_favorited = serializers.BooleanField(
+        source='favorite.all',
+        required=False,
+    )
+    is_in_shopping_cart = serializers.BooleanField(
+        source='shoppingcarts.all',
+        required=False,
+    )
 
     class Meta:
         model = Recipes

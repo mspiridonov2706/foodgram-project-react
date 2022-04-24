@@ -86,6 +86,8 @@ jobs:
             sudo docker-compose exec -T backend python manage.py collectstatic --no-input
             sudo docker-compose exec -T backend python manage.py makemigrations
             sudo docker-compose exec -T backend python manage.py migrate
+            sudo docker-compose exec -T backend python manage.py load_tags
+            sudo docker-compose exec -T backend python manage.py load_ingredients
 
 
   # JOB 4: SEND MESSAGE TO TELEGRAM

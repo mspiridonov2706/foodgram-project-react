@@ -56,7 +56,6 @@ class UserViewSet(viewsets.ModelViewSet):
     def my_profile(self, request):
         user = request.user
         serializer = self.get_serializer(user)
-        serializer.is_valid(raise_exception=True)
         return Response(serializer.data)
 
     @action(
