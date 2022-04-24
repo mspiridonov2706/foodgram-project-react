@@ -84,10 +84,11 @@ jobs:
 
             cd infra
             sudo docker-compose up -d --build
+            sudo docker-compose exec -T backend mkdir staticfiles
             sudo docker-compose exec -T backend python manage.py collectstatic --no-input
             sudo docker-compose exec -T backend python manage.py makemigrations
             sudo docker-compose exec -T backend python manage.py migrate
-            
+
 
   # JOB 4: SEND MESSAGE TO TELEGRAM
   send_message:
