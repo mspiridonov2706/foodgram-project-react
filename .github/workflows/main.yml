@@ -67,9 +67,9 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker-compose stop
-            docker-compose rm -f backend  
-            docker image rm mspiridonov/foodgram_backend
+            sudo docker-compose stop
+            sudo docker-compose rm -f backend  
+            sudo docker image rm mspiridonov/foodgram_backend
 
             cd foodgram-project-react
             sudo rm .env
