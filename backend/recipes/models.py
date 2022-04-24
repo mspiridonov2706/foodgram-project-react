@@ -20,14 +20,6 @@ class Subscribe(models.Model):
         related_name='following',
     )
 
-    def clean(self):
-        if self.user == self.author:
-            raise ValidationError('Нельзя подписываться на самого себя.')
-
-    def __str__(self):
-        str = f'{self.user} подписан на {self.author}'
-        return str
-
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -38,6 +30,14 @@ class Subscribe(models.Model):
 
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+
+    def clean(self):
+        if self.user == self.author:
+            raise ValidationError('Нельзя подписываться на самого себя.')
+
+    def __str__(self):
+        str = f'{self.user} подписан на {self.author}'
+        return str
 
 
 class Ingredients(models.Model):
@@ -50,14 +50,19 @@ class Ingredients(models.Model):
         verbose_name='Еденица измерения',
     )
 
-    def __str__(self):
-        return self.name
-
     class Meta:
-        unique_together = [['name', 'measurement_unit']]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'measurement_unit'],
+                name='unique_ingredient'
+            ),
+        ]
 
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+
+    def __str__(self):
+        return self.name
 
 
 class Tags(models.Model):
@@ -76,12 +81,12 @@ class Tags(models.Model):
         unique=True,
     )
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Тэг'
         verbose_name_plural = 'Тэги'
+
+    def __str__(self):
+        return self.name
 
 
 class Recipes(models.Model):
@@ -121,12 +126,12 @@ class Recipes(models.Model):
         verbose_name='Время приготовления'
     )
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
+
+    def __str__(self):
+        return self.name
 
 
 class RecipesIngridients(models.Model):
@@ -146,13 +151,12 @@ class RecipesIngridients(models.Model):
         verbose_name='Количество ингридиента',
     )
 
-    def __str__(self):
-        str = f'{self.recipe} - {self.ingredient}'
-        return str
-
     class Meta:
         verbose_name = 'Рецепт-ингредиент'
         verbose_name_plural = 'Рецепты-ингредиенты'
+
+    def __str__(self):
+        return f'{self.recipe} - {self.ingredient}'
 
 
 class Favorite(models.Model):
@@ -170,10 +174,6 @@ class Favorite(models.Model):
         related_name='favorite',
     )
 
-    def __str__(self):
-        text = f'{self.user} - {self.recipe}'
-        return text
-
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -184,6 +184,10 @@ class Favorite(models.Model):
 
         verbose_name = 'Любимый рецепт'
         verbose_name_plural = 'Любимые рецепты'
+
+    def __str__(self):
+        text = f'{self.user} - {self.recipe}'
+        return text
 
 
 class ShoppingCarts(models.Model):
@@ -201,14 +205,6 @@ class ShoppingCarts(models.Model):
         related_name='shoppingcarts',
     )
 
-    def clean(self):
-        if self.user == self.author:
-            raise ValidationError('Рецепт уже в списке покупок.')
-
-    def __str__(self):
-        text = f'{self.user} - {self.recipe}'
-        return text
-
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -219,3 +215,11 @@ class ShoppingCarts(models.Model):
 
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
+
+    def clean(self):
+        if self.user == self.author:
+            raise ValidationError('Рецепт уже в списке покупок.')
+
+    def __str__(self):
+        text = f'{self.user} - {self.recipe}'
+        return text
