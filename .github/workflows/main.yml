@@ -67,10 +67,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            sudo docker-compose stop
-            sudo docker-compose rm -f backend  
-            sudo docker image rm mspiridonov/foodgram_backend
-
             cd foodgram-project-react
             sudo rm .env
             touch .env
@@ -83,8 +79,10 @@ jobs:
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
 
             cd infra
+            sudo docker-compose stop
+            sudo docker-compose rm -f backend  
+            sudo docker image rm mspiridonov/foodgram_backend
             sudo docker-compose up -d --build
-            sudo docker-compose exec -T backend mkdir staticfiles
             sudo docker-compose exec -T backend python manage.py collectstatic --no-input
             sudo docker-compose exec -T backend python manage.py makemigrations
             sudo docker-compose exec -T backend python manage.py migrate
