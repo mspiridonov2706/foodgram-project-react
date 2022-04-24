@@ -77,10 +77,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserSubsribedSerializer(UserSerializer):
-    is_subscribed = serializers.BooleanField(source='following.all')
+    is_subscribed = serializers.SerializerMethodField()
 
     class Meta(UserSerializer.Meta):
         fields = UserSerializer.Meta.fields + ['is_subscribed']
+
+    def get_is_subscribed(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated and obj.following.filter(user=user.id):
+            return True
+        return False
 
 
 class RecipesSmallSerializer(serializers.ModelSerializer):
@@ -197,23 +203,19 @@ class RecipesSerializer(serializers.ModelSerializer):
             'cooking_time',
         ]
 
-    def get_is_favorited(self, recipe):
+    def get_is_favorited(self, obj):
         user = self.context['request'].user
-        if user.is_anonymous:
-            return False
-        is_favorited = user.favorite.filter(
-            user=user.id,
-            recipe=recipe.id).exists()
-        return is_favorited
+        if user.is_authenticated and user.favorite.filter(user=user.id, 
+                                                          recipe=obj.id):
+            return True
+        return
 
-    def get_is_in_shopping_cart(self, recipe):
+    def get_is_in_shopping_cart(self, obj):
         user = self.context['request'].user
-        if user.is_anonymous:
-            return False
-        is_in_shopping_cart = user.shoppingcarts.filter(
-            user=user.id,
-            recipe=recipe.id).exists()
-        return is_in_shopping_cart
+        if user.is_authenticated and user.shoppingcarts.filter(user=user.id,
+                                                               recipe=obj.id):
+            return True
+        return False
 
     def to_internal_value(self, data):
         if not data.get('image'):
