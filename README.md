@@ -34,7 +34,38 @@ TELEGRAM_TOKEN=your_bot_token (по-желанию)
 ```
 
 - создайте и запустите свой github workflow:
-    <details><summary>cодержание файла workflow <strong>main.yml</strong></summary>
+  <details><summary>cодержание файла workflow <strong>main.yml</strong></summary>
+
+    ```yaml
+    name: foodgram workflow
+    on: [push]
+    jobs:
+      deploy:
+        name: Deploy on server
+        runs-on: ubuntu-latest
+        steps:
+          - name: executing remote ssh commands to deploy
+            uses: appleboy/ssh-action@master
+            with:
+              host: ${{ secrets.SERVER_HOST }}
+              username: ${{ secrets.SERVER_USER }}
+              key: ${{ secrets.SSH_KEY }}
+              script: |
+                cd foodgram-project-react
+                touch .env
+                echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+                echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
+                echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
+                echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+                echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+                echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+                echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+                cd infra
+                sudo docker-compose up -d --build
+                sudo docker-compose exec -T backend python manage.py collectstatic --no-input
+                sudo docker-compose exec -T backend python manage.py makemigrations
+                sudo docker-compose exec -T backend python manage.py migrate
+    ```
 
     </details>
 - создайте суперпользователя на сервере:
