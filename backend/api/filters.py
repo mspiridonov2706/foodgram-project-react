@@ -4,6 +4,9 @@ from recipes.models import Ingredients, Recipes
 
 
 class RecipeFilter(filters.FilterSet):
+    author = filters.NumberFilter(
+        field_name='author',
+    )
     tags = filters.CharFilter(
         field_name='tags__slug',
         method='filter_tags',
@@ -36,7 +39,7 @@ class RecipeFilter(filters.FilterSet):
 
     class Meta:
         model = Recipes
-        fields = ['tags', 'is_favorited']
+        fields = ['author', 'tags', 'is_favorited', 'is_in_shopping_cart']
 
 
 class IngredientsFilter(filters.FilterSet):
