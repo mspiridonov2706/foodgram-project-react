@@ -13,8 +13,9 @@
 #### Запуск приложения
 
 - подготовьте ваш сервер (рекомендуемая система):
-  - установите [Docker](https://docs.docker.com/engine/install/) и [Docker-compose](https://docs.docker.com/compose/install/)
-- Сделайте fork данного репозитория к себе;
+  - установите [Docker](https://docs.docker.com/engine/install/) и [Docker-compose](https://docs.docker.com/compose/install/);
+  - сделайте fork данного репозитория к себе;
+  - склонируйте репозиторий на ваш сервер;
 - Создайте в Repository secrets на Github следующие секреты:
 
 ```bash
