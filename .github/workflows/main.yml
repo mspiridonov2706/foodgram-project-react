@@ -71,9 +71,9 @@ jobs:
             sudo rm .env
             sudo rm docker-compose.yaml
             sudo rm -r nginx
-            sudo wget -O docker-compose.yaml https://raw.githubusercontent.com/Muxa2793/foodgram-project-react/master/infra/docker-compose.yml?token=GHSAT0AAAAAABPEM3IP6557DPS2WRF3DM2OYTFJLQQ
+            sudo wget -O docker-compose.yaml https://raw.githubusercontent.com/Muxa2793/foodgram-project-react/master/infra/docker-compose.yml
             sudo mkdir nginx && cd nginx
-            sudo wget -O default.conf https://raw.githubusercontent.com/Muxa2793/foodgram-project-react/master/infra/nginx.conf?token=GHSAT0AAAAAABPEM3IPBOQ6IMQ33AHFM4GUYTFJMUA && cd ..
+            sudo wget -O default.conf https://raw.githubusercontent.com/Muxa2793/foodgram-project-react/master/infra/nginx.conf && cd ..
             sudo docker-compose stop
             sudo docker-compose rm backend
             touch .env
