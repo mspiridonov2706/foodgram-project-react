@@ -176,17 +176,13 @@ class IngredientsRecipeSerializer(serializers.ModelSerializer):
 
 class RecipesSerializer(serializers.ModelSerializer):
 
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault)
+
     image = serializers.ImageField()
     ingredients = IngredientsSerializer(many=True)
     author = UserSubsribedSerializer(default=serializers.CurrentUserDefault())
-    is_favorited = serializers.BooleanField(
-        source='favorite.all',
-        required=False,
-    )
-    is_in_shopping_cart = serializers.BooleanField(
-        source='shoppingcarts.all',
-        required=False,
-    )
+    is_favorited = serializers.SerializerMethodField(required=False)
+    is_in_shopping_cart = serializers.SerializerMethodField(required=False)
 
     class Meta:
         model = Recipes
@@ -201,7 +197,26 @@ class RecipesSerializer(serializers.ModelSerializer):
             'image',
             'text',
             'cooking_time',
+            'user'
         ]
+
+    def get_is_favorited(self, recipe):
+        user = self.context['request'].user
+        if user.is_anonymous:
+            return False
+        is_favorited = user.favorite.filter(
+            user=user.id,
+            recipe=recipe.id).exists()
+        return is_favorited
+
+    def get_is_in_shopping_cart(self, recipe):
+        user = self.context['request'].user
+        if user.is_anonymous:
+            return False
+        is_in_shopping_cart = user.shoppingcarts.filter(
+            user=user.id,
+            recipe=recipe.id).exists()
+        return is_in_shopping_cart
 
     def to_internal_value(self, data):
         if not data.get('image'):
