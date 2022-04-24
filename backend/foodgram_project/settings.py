@@ -102,9 +102,9 @@ USE_TZ = False
 STATIC_URL = '/staticfiles/'
 
 if DEBUG:
-    STATICFILES_DIRS = (os.path.join(BASE_DIR, 'staticfiles/'),)
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, 'staticfiles'),)
 else:
-    STATIC_ROOT = os.path.join(BASE_DIR, './staticfiles')
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
