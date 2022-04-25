@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models
 
 User = get_user_model()
@@ -43,7 +44,7 @@ class Subscribe(models.Model):
 class Ingredients(models.Model):
     name = models.CharField(
         max_length=128,
-        verbose_name='Название ингридиента',
+        verbose_name='Название ингредиента',
     )
     measurement_unit = models.CharField(
         max_length=32,
@@ -104,7 +105,7 @@ class Recipes(models.Model):
     ingredients = models.ManyToManyField(
         Ingredients,
         through='RecipesIngridients',
-        verbose_name='Ингридиенты',
+        verbose_name='Ингредиенты',
         related_name='recipe',
         related_query_name='recipe',
     )
@@ -123,12 +124,19 @@ class Recipes(models.Model):
         verbose_name='Описание рецепта'
     )
     cooking_time = models.IntegerField(
-        verbose_name='Время приготовления'
+        verbose_name='Время приготовления',
+        validators=[
+            MinValueValidator(
+                limit_value=0,
+                message='Время приготовления не может быть отрицательным',
+            )
+        ],
     )
 
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
+        ordering = ['-id']
 
     def __str__(self):
         return self.name
@@ -148,7 +156,13 @@ class RecipesIngridients(models.Model):
         related_query_name='recipes_ingredients',
     )
     amount = models.IntegerField(
-        verbose_name='Количество ингридиента',
+        verbose_name='Количество ингредиента',
+        validators=[
+            MinValueValidator(
+                limit_value=0,
+                message='Кол-во ингредиента не может быть отрицательным',
+            )
+        ],
     )
 
     class Meta:

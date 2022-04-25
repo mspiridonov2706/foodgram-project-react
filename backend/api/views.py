@@ -6,10 +6,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, permissions, status, viewsets, exceptions
 from rest_framework.decorators import action, api_view
 from rest_framework.generics import get_object_or_404
-from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from .filters import IngredientsFilter, RecipeFilter
+from .pagination import LimitPageNumberPagination
 from .permissions import IsAdminOrAuthorOrReadOnly
 from .serializers import (
     IngredientsSerializer,
@@ -36,7 +36,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = LimitPageNumberPagination
 
     def get_serializer_class(self):
         if self.action == 'get_subscriptions':
@@ -154,7 +154,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
     queryset = Recipes.objects.all()
     serializer_class = RecipesSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = LimitPageNumberPagination
     permission_classes = (IsAdminOrAuthorOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter

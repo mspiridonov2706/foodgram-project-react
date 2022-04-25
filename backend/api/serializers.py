@@ -6,6 +6,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.files.base import ContentFile
 from PIL import Image
 from rest_framework import serializers
+from rest_framework.validators import ValidationError
 
 from recipes.models import (
     Ingredients,
@@ -155,6 +156,13 @@ class IngredientsSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'measurement_unit', 'amount']
         read_only_fields = ['name', 'measurement_unit']
 
+    def validate_amount(self, amount):
+        if amount < 0:
+            raise ValidationError(
+                detail='Убедитесь, что данное значение больше или равно 0',
+            )
+        return amount
+
 
 class TagsSerializer(serializers.ModelSerializer):
 
@@ -291,3 +299,8 @@ class RecipesSerializer(serializers.ModelSerializer):
             setattr(recipe, key, value)
         recipe.save()
         return recipe
+
+    def validate_cooking_time(self, time):
+        if time < 0:
+            raise ValidationError
+        return time
