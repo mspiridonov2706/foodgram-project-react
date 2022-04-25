@@ -127,8 +127,8 @@ class Recipes(models.Model):
         verbose_name='Время приготовления',
         validators=[
             MinValueValidator(
-                limit_value=0,
-                message='Время приготовления не может быть отрицательным',
+                limit_value=1,
+                message='Время готовки не может быть меньше или равно 0',
             )
         ],
     )
@@ -159,8 +159,8 @@ class RecipesIngridients(models.Model):
         verbose_name='Количество ингредиента',
         validators=[
             MinValueValidator(
-                limit_value=0,
-                message='Кол-во ингредиента не может быть отрицательным',
+                limit_value=1,
+                message='Кол-во ингредиента не может быть меньше или равно 0',
             )
         ],
     )

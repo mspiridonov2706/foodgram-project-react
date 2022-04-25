@@ -157,9 +157,9 @@ class IngredientsSerializer(serializers.ModelSerializer):
         read_only_fields = ['name', 'measurement_unit']
 
     def validate_amount(self, amount):
-        if amount < 0:
+        if amount <= 0:
             raise ValidationError(
-                detail='Убедитесь, что данное значение больше или равно 0',
+                detail='Убедитесь, что данное значение больше 0',
             )
         return amount
 
@@ -301,6 +301,6 @@ class RecipesSerializer(serializers.ModelSerializer):
         return recipe
 
     def validate_cooking_time(self, time):
-        if time < 0:
+        if time <= 0:
             raise ValidationError
         return time
